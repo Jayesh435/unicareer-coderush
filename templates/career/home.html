@@ -1,0 +1,46 @@
+{% extends 'career/base.html' %}
+
+{% block title %}Home - UniCareer{% endblock %}
+
+{% block content %}
+<div class="row align-items-center" style="min-height: 60vh;">
+    <div class="col-lg-6">
+        <h1 class="display-4 fw-bold">Welcome to UniCareer</h1>
+        <p class="lead">Your one-stop platform for campus placements</p>
+        <p class="text-muted">Connect with top companies, prepare for interviews, and land your dream job!</p>
+        <div class="mt-4">
+            <a href="{% url 'register' %}" class="btn btn-primary btn-lg me-2">
+                <i class="bi bi-person-plus"></i> Register as Student
+            </a>
+            <a href="{% url 'login' %}" class="btn btn-outline-primary btn-lg">
+                <i class="bi bi-box-arrow-in-right"></i> Login
+            </a>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="card shadow-lg">
+            <div class="card-body p-5">
+                <h3 class="card-title mb-4">Key Features</h3>
+                <ul class="list-unstyled">
+                    <li class="mb-3">
+                        <i class="bi bi-check-circle-fill text-success"></i>
+                        <strong>Smart Job Matching</strong> - See only eligible jobs based on your profile
+                    </li>
+                    <li class="mb-3">
+                        <i class="bi bi-check-circle-fill text-success"></i>
+                        <strong>ATS Resume Scanner</strong> - AI-powered resume analysis
+                    </li>
+                    <li class="mb-3">
+                        <i class="bi bi-check-circle-fill text-success"></i>
+                        <strong>Company Wiki</strong> - Access interview experiences from seniors
+                    </li>
+                    <li class="mb-3">
+                        <i class="bi bi-check-circle-fill text-success"></i>
+                        <strong>Easy Application Tracking</strong> - Monitor your application status
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

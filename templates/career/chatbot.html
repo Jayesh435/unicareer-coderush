@@ -1,0 +1,105 @@
+{% extends 'career/base.html' %}
+{% load static %}
+
+{% block title %}UniCareer AI Assistant{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg" style="height: 80vh;">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="bi bi-robot"></i> UniCareer AI Assistant</h5>
+                    <span class="badge bg-light text-primary">Powered by Gemini</span>
+                </div>
+                <div class="card-body overflow-auto" id="chat-history" style="background-color: #f8f9fa;">
+                    <div class="d-flex justify-content-start mb-3">
+                        <div class="bg-white p-3 rounded shadow-sm" style="max-width: 80%;">
+                            <p class="mb-0">Hello! I'm your UniCareer AI Assistant. I can help you with:</p>
+                            <ul class="mb-0 ps-3">
+                                <li>Interview preparation tips</li>
+                                <li>Resume improvement advice</li>
+                                <li>Career path guidance</li>
+                                <li>Company specific information</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-white">
+                    <form id="chat-form" class="d-flex gap-2">
+                        {% csrf_token %}
+                        <input type="text" id="user-input" class="form-control" placeholder="Ask me anything about your career..." required>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-send-fill"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/marked.min.js' %}"></script>
+<script>
+    const chatHistory = document.getElementById('chat-history');
+    const chatForm = document.getElementById('chat-form');
+    const userInput = document.getElementById('user-input');
+
+    function appendMessage(message, isUser) {
+        const div = document.createElement('div');
+        div.className = `d-flex justify-content-${isUser ? 'end' : 'start'} mb-3`;
+        
+        const content = document.createElement('div');
+        content.className = isUser ? 'bg-primary text-white p-3 rounded shadow-sm' : 'bg-white p-3 rounded shadow-sm';
+        content.style.maxWidth = '80%';
+        
+        // Parse Markdown for bot responses, plain text for user
+        if (isUser) {
+            content.textContent = message;
+        } else {
+            content.innerHTML = marked.parse(message);
+        }
+        
+        div.appendChild(content);
+        chatHistory.appendChild(div);
+        chatHistory.scrollTop = chatHistory.scrollHeight;
+    }
+
+    chatForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const message = userInput.value.trim();
+        if (!message) return;
+
+        // Add user message
+        appendMessage(message, true);
+        userInput.value = '';
+        userInput.disabled = true;
+
+        try {
+            const response = await fetch('{% url "chatbot" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                },
+                body: JSON.stringify({ message: message })
+            });
+
+            const data = await response.json();
+            
+            if (data.error) {
+                appendMessage('Sorry, I encountered an error: ' + data.error, false);
+            } else {
+                appendMessage(data.response, false);
+            }
+        } catch (error) {
+            appendMessage('Sorry, something went wrong. Please try again.', false);
+        } finally {
+            userInput.disabled = false;
+            userInput.focus();
+        }
+    });
+</script>
+{% endblock %}

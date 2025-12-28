@@ -1,0 +1,41 @@
+{% extends 'career/base.html' %}
+
+{% block title %}Delete Job - UniCareer{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow border-danger">
+            <div class="card-header bg-danger text-white">
+                <h4 class="mb-0"><i class="bi bi-trash"></i> Delete Job</h4>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-danger">
+                    <i class="bi bi-exclamation-triangle"></i>
+                    <strong>Warning!</strong> This action cannot be undone.
+                </div>
+                
+                <p>Are you sure you want to delete the following job?</p>
+                
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5>{{ job.company_name }} - {{ job.role }}</h5>
+                        <p class="mb-0">
+                            <strong>Package:</strong> {{ job.package_lpa }} LPA<br>
+                            <strong>Posted:</strong> {{ job.posted_at|date:"M d, Y" }}
+                        </p>
+                    </div>
+                </div>
+                
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-danger">Yes, Delete Job</button>
+                        <a href="{% url 'admin_dashboard' %}" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

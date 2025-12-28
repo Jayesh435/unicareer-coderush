@@ -1,0 +1,107 @@
+{% extends 'career/base.html' %}
+
+{% block title %}ATS Resume Scanner - UniCareer{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <h2><i class="bi bi-file-earmark-text"></i> ATS Resume Scanner</h2>
+        <p class="text-muted">AI-powered resume analysis using Google Gemini</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card shadow mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Upload Resume for Analysis</h5>
+            </div>
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label for="job_id" class="form-label">Select Job *</label>
+                        <select name="job_id" id="job_id" class="form-control" required>
+                            <option value="">-- Choose a job --</option>
+                            {% for job in jobs %}
+                                <option value="{{ job.id }}" {% if selected_job and selected_job.id == job.id %}selected{% endif %}>
+                                    {{ job.company_name }} - {{ job.role }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.resume.id_for_label }}" class="form-label">Upload Resume (PDF) *</label>
+                        {{ form.resume }}
+                        {% if form.resume.errors %}
+                            <div class="text-danger">{{ form.resume.errors }}</div>
+                        {% endif %}
+                        <small class="form-text text-muted">Upload your resume in PDF format for AI analysis</small>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-search"></i> Analyze Resume
+                    </button>
+                </form>
+            </div>
+        </div>
+        
+        {% if result %}
+        <div class="card shadow border-success">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0"><i class="bi bi-check-circle"></i> Analysis Results</h5>
+            </div>
+            <div class="card-body">
+                <h6>Job: {{ selected_job.company_name }} - {{ selected_job.role }}</h6>
+                <hr>
+                <div class="analysis-result">
+                    <pre style="white-space: pre-wrap; font-family: inherit;">{{ result }}</pre>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card shadow">
+            <div class="card-header bg-info text-white">
+                <h6 class="mb-0"><i class="bi bi-info-circle"></i> How it Works</h6>
+            </div>
+            <div class="card-body">
+                <ol>
+                    <li class="mb-2">Select a job you want to apply for</li>
+                    <li class="mb-2">Upload your resume in PDF format</li>
+                    <li class="mb-2">Our AI analyzes your resume against the job description</li>
+                    <li class="mb-2">Get a match score (0-100) and suggestions</li>
+                    <li class="mb-2">Improve your resume based on feedback</li>
+                </ol>
+            </div>
+        </div>
+        
+        <div class="card shadow mt-3">
+            <div class="card-header bg-warning">
+                <h6 class="mb-0"><i class="bi bi-lightbulb"></i> Tips</h6>
+            </div>
+            <div class="card-body">
+                <ul class="mb-0">
+                    <li class="mb-2">Use keywords from the job description</li>
+                    <li class="mb-2">Highlight relevant skills and experience</li>
+                    <li class="mb-2">Keep your resume concise and well-formatted</li>
+                    <li class="mb-2">Update your resume based on AI suggestions</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    select, input[type="file"] {
+        width: 100%;
+        padding: 0.375rem 0.75rem;
+        border: 1px solid #ced4da;
+        border-radius: 0.375rem;
+    }
+</style>
+{% endblock %}

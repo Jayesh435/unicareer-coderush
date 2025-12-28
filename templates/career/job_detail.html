@@ -1,0 +1,135 @@
+{% extends 'career/base.html' %}
+
+{% block title %}Job Details - UniCareer{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <h2>{{ job.company_name }}</h2>
+        <p class="text-muted">{{ job.role }}</p>
+    </div>
+    <div class="col-auto">
+        {% if user.role == 'student' %}
+            {% if is_eligible and not has_applied %}
+                <a href="{% url 'apply_job' job.id %}" class="btn btn-success btn-lg">
+                    <i class="bi bi-send"></i> Apply Now
+                </a>
+            {% elif has_applied %}
+                <button class="btn btn-success btn-lg" disabled>
+                    <i class="bi bi-check-circle"></i> Already Applied
+                </button>
+            {% else %}
+                <button class="btn btn-secondary btn-lg" disabled>
+                    <i class="bi bi-x-circle"></i> Not Eligible
+                </button>
+            {% endif %}
+        {% endif %}
+        {% if user.role == 'admin' %}
+            <a href="{% url 'edit_job' job.id %}" class="btn btn-warning">
+                <i class="bi bi-pencil"></i> Edit
+            </a>
+            <a href="{% url 'job_applicants' job.id %}" class="btn btn-primary">
+                <i class="bi bi-people"></i> View Applicants
+            </a>
+        {% endif %}
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card shadow mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Job Description</h5>
+            </div>
+            <div class="card-body">
+                <p style="white-space: pre-wrap;">{{ job.job_description }}</p>
+            </div>
+        </div>
+
+        <!-- Job Updates Section -->
+        <div class="card shadow mb-4">
+            <div class="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="bi bi-bell"></i> Updates & Announcements</h5>
+            </div>
+            <div class="card-body">
+                {% if updates %}
+                    <div class="list-group">
+                        {% for update in updates %}
+                            <div class="list-group-item">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h6 class="mb-1 text-primary">Update</h6>
+                                    <small class="text-muted">{{ update.created_at|date:"M d, Y H:i" }}</small>
+                                </div>
+                                <p class="mb-1" style="white-space: pre-wrap;">{{ update.message }}</p>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-muted text-center my-3">No updates posted yet.</p>
+                {% endif %}
+
+                {% if user.role == 'admin' and update_form %}
+                    <hr>
+                    <h6 class="mb-3">Post New Update (Will notify all applicants)</h6>
+                    <form method="post" action="{% url 'add_job_update' job.id %}">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            {{ update_form.message }}
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-send"></i> Post Update
+                        </button>
+                    </form>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card shadow mb-4">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">Job Details</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>Package:</strong><br>₹{{ job.package_lpa }} LPA</p>
+                <hr>
+                <p><strong>Min CGPA Required:</strong><br>{{ job.min_cgpa_required }}</p>
+                <hr>
+                <p><strong>Eligible Branches:</strong><br>{{ job.eligible_branches }}</p>
+                <hr>
+                <p><strong>Application Deadline:</strong><br>{{ job.deadline|date:"M d, Y H:i" }}</p>
+                <hr>
+                <p><strong>Posted On:</strong><br>{{ job.posted_at|date:"M d, Y" }}</p>
+                <hr>
+                <p><strong>Status:</strong><br>
+                    {% if job.is_active %}
+                        <span class="badge bg-success">Active</span>
+                    {% else %}
+                        <span class="badge bg-secondary">Inactive</span>
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+        
+        {% if user.role == 'student' and not is_eligible %}
+        <div class="card shadow border-warning">
+            <div class="card-header bg-warning">
+                <h6 class="mb-0"><i class="bi bi-exclamation-triangle"></i> Eligibility Note</h6>
+            </div>
+            <div class="card-body">
+                <p class="mb-0"><small>You are not eligible for this job. Please check the eligibility criteria.</small></p>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Job Updates Section moved to main column -->
+
+
+<div class="mt-3">
+    <a href="{% if user.role == 'admin' %}{% url 'admin_dashboard' %}{% else %}{% url 'student_dashboard' %}{% endif %}" class="btn btn-secondary">
+        <i class="bi bi-arrow-left"></i> Back to Dashboard
+    </a>
+</div>
+{% endblock %}

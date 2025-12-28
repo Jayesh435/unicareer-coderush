@@ -1,0 +1,149 @@
+{% extends 'career/base.html' %}
+
+{% block title %}Student Dashboard - UniCareer{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <h2><i class="bi bi-speedometer2"></i> Student Dashboard</h2>
+        <p class="text-muted">Welcome, {{ user.username }}!</p>
+    </div>
+    <div class="col-auto">
+        <a href="{% url 'edit_profile' %}" class="btn btn-primary">
+            <i class="bi bi-person"></i> Edit Profile
+        </a>
+        <a href="{% url 'ats_scanner' %}" class="btn btn-primary">
+            <i class="bi bi-file-earmark-text"></i> ATS Scanner
+        </a>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-body text-center">
+                <h6 class="text-muted">Branch</h6>
+                <h4>{{ profile.branch }}</h4>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-body text-center">
+                <h6 class="text-muted">CGPA</h6>
+                <h4>{{ profile.current_cgpa }}</h4>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-body text-center">
+                <h6 class="text-muted">Backlogs</h6>
+                <h4>{{ profile.backlogs }}</h4>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-body text-center">
+                <h6 class="text-muted">Applications</h6>
+                <h4>{{ my_applications|length }}</h4>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card shadow mb-4">
+    <div class="card-header bg-primary text-white">
+        <h5 class="mb-0">Available Job Opportunities</h5>
+    </div>
+    <div class="card-body">
+        {% if jobs_with_eligibility %}
+            {% for item in jobs_with_eligibility %}
+            <div class="card mb-3 {% if not item.is_eligible %}border-warning{% elif item.has_applied %}border-success{% endif %}">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <h5 class="card-title">
+                                {{ item.job.company_name }} - {{ item.job.role }}
+                                {% if not item.is_eligible %}
+                                    <span class="badge bg-warning text-dark">Not Eligible</span>
+                                {% elif item.has_applied %}
+                                    <span class="badge bg-success">Applied</span>
+                                {% else %}
+                                    <span class="badge bg-info">Eligible</span>
+                                {% endif %}
+                            </h5>
+                            <p class="card-text">
+                                <strong>Package:</strong> {{ item.job.package_lpa }} LPA<br>
+                                <strong>Min CGPA:</strong> {{ item.job.min_cgpa_required }}<br>
+                                <strong>Eligible Branches:</strong> {{ item.job.eligible_branches }}<br>
+                                <strong>Deadline:</strong> {{ item.job.deadline|date:"M d, Y H:i" }}
+                            </p>
+                        </div>
+                        <div class="col-md-4 text-end d-flex flex-column justify-content-center">
+                            <a href="{% url 'job_detail' item.job.id %}" class="btn btn-info mb-2">
+                                <i class="bi bi-eye"></i> View Details
+                            </a>
+                            {% if item.is_eligible and not item.has_applied %}
+                                <a href="{% url 'apply_job' item.job.id %}" class="btn btn-success">
+                                    <i class="bi bi-send"></i> Apply Now
+                                </a>
+                            {% elif not item.is_eligible %}
+                                <button class="btn btn-secondary" disabled>
+                                    <i class="bi bi-x-circle"></i> Cannot Apply
+                                </button>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p class="text-muted text-center py-4">No active job opportunities available.</p>
+        {% endif %}
+    </div>
+</div>
+
+<div class="card shadow">
+    <div class="card-header bg-success text-white">
+        <h5 class="mb-0">My Applications</h5>
+    </div>
+    <div class="card-body">
+        {% if my_applications %}
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Company</th>
+                            <th>Role</th>
+                            <th>Applied On</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for app in my_applications %}
+                        <tr>
+                            <td><strong>{{ app.job.company_name }}</strong></td>
+                            <td>{{ app.job.role }}</td>
+                            <td>{{ app.applied_at|date:"M d, Y H:i" }}</td>
+                            <td>
+                                {% if app.status == 'Applied' %}
+                                    <span class="badge bg-info">{{ app.status }}</span>
+                                {% elif app.status == 'Shortlisted' %}
+                                    <span class="badge bg-success">{{ app.status }}</span>
+                                {% else %}
+                                    <span class="badge bg-danger">{{ app.status }}</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="text-muted text-center py-4">You haven't applied to any jobs yet.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

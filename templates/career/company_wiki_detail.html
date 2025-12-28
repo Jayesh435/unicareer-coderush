@@ -1,0 +1,41 @@
+{% extends 'career/base.html' %}
+
+{% block title %}{{ wiki.company_name }} - Company Wiki{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <h2>{{ wiki.company_name }} ({{ wiki.year }})</h2>
+        <p class="text-muted">Interview Experience</p>
+    </div>
+    <div class="col-auto">
+        <a href="{% url 'company_wiki_list' %}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Back to List
+        </a>
+    </div>
+</div>
+
+<div class="card shadow mb-4">
+    <div class="card-header bg-primary text-white">
+        <h5 class="mb-0"><i class="bi bi-question-circle"></i> Interview Questions</h5>
+    </div>
+    <div class="card-body">
+        <p style="white-space: pre-wrap;">{{ wiki.interview_questions }}</p>
+    </div>
+</div>
+
+<div class="card shadow mb-4">
+    <div class="card-header bg-success text-white">
+        <h5 class="mb-0"><i class="bi bi-lightbulb"></i> Tips from Seniors</h5>
+    </div>
+    <div class="card-body">
+        <p style="white-space: pre-wrap;">{{ wiki.senior_tips }}</p>
+    </div>
+</div>
+
+<div class="card shadow">
+    <div class="card-body">
+        <p class="mb-0"><small class="text-muted">Added on {{ wiki.created_at|date:"M d, Y" }}</small></p>
+    </div>
+</div>
+{% endblock %}
