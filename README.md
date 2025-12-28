@@ -62,7 +62,7 @@ A comprehensive Django-based web application for managing campus placements, fea
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/Jayesh435/UniCareer.git
+   git clone https://github.com/Jayesh435/unicareer-coderush.git
    cd UniCareer
    ```
 
@@ -97,8 +97,8 @@ A comprehensive Django-based web application for managing campus placements, fea
    python manage.py createadmin admin admin@unicareer.com adminpass123
    ```
    This automatically creates an admin user with access to both:
-   - Django Admin Panel: http://localhost:8000/admin/
-   - Custom Admin Dashboard: http://localhost:8000/admin-dashboard/
+   - Django Admin Panel: https://unicareer.onrender.com/admin/
+   - Custom Admin Dashboard: https://unicareer.onrender.com/admin-dashboard/
    
    > **Security Note:** For production environments, avoid passing passwords as command-line arguments. Use Option B or set passwords via the Django admin interface after user creation.
    
@@ -126,14 +126,14 @@ A comprehensive Django-based web application for managing campus placements, fea
    ```
 
 7. **Access the application**
-   - Home page: http://localhost:8000
+   - Home page: http://unicareer.onrender.com/
    - **Admin Access:**
-     - Django Admin Panel (manage models): http://localhost:8000/admin/
-     - Custom Admin Dashboard (job management): http://localhost:8000/admin-dashboard/
-     - Login page: http://localhost:8000/login/
+     - Django Admin Panel (manage models): https://unicareer.onrender.com/admin/
+     - Custom Admin Dashboard (job management): https://unicareer.onrender.com/admin-dashboard/
+     - Login page: https://unicareer.onrender.com/login/
    - **Student Access:**
-     - Student registration: http://localhost:8000/register/
-     - Login page: http://localhost:8000/login/
+     - Student registration: https://unicareer.onrender.com/register/
+     - Login page: https://unicareer.onrender.com/login/
 
 ## Deployment (Render + Docker + Supabase)
 
@@ -212,7 +212,7 @@ UniCareer provides **two admin interfaces** with different purposes:
 
 ### For Admins
 
-1. **Login** with admin credentials at http://localhost:8000/login/
+1. **Login** with admin credentials at https://unicareer.onrender.com/login/
 2. **Choose your admin interface:**
    - For job posting and application management → Custom Admin Dashboard
    - For system administration → Django Admin Panel
